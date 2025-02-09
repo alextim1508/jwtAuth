@@ -1,0 +1,27 @@
+###
+POST http://localhost:8080/auth/sign-in
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+
+{
+  "username" : "admin",
+  "password" : "password"
+}
+
+> {%
+client.global.set("token",response.body["token"])
+%}
+
+###
+GET http://localhost:8080/admin
+Accept: */*
+Content-Type: application/json
+Cache-Control: no-cache
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
